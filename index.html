@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<link rel="shortcut icon" type="image/png" href="https://i.postimg.cc/gJNqvcvK/abo-alabed-lwjw.png">
+<link rel="apple-touch-icon-precomposed" href="https://i.postimg.cc/gJNqvcvK/abo-alabed-lwjw.png">
+<link rel="icon" type="image/png" href="https://i.postimg.cc/gJNqvcvK/abo-alabed-lwjw.png">
+<link rel="apple-touch-icon" href="https://i.postimg.cc/gJNqvcvK/abo-alabed-lwjw.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta charset="UTF-8">
+    <title>FAROOJ</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f4;
+            --text-color: #000000;
+            --box-bg: #ffffff;
+            --border-color: #ddd;
+            --primary-red: #8B0000;
+            --primary-red-hover: #A52A2A;
+        }
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --box-bg: #1e1e1e;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: sans-serif; 
+            background: var(--bg-color); 
+            color: var(--text-color); 
+            padding: 10px; 
+            margin: 0; 
+            transition: background 0.3s, color 0.3s; 
+        }
+        .category-title { 
+            background: var(--primary-red); 
+            color: white; 
+            padding: 18px 22px !important; 
+            cursor: pointer; 
+            border-radius: 12px !important; 
+            font-weight: 800 !important; 
+            margin-bottom: 12px !important; 
+            text-align: center; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.5px;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .category-title:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        .cat-content { display: none; margin-bottom: 15px; }
+        .item-container { 
+            margin: 8px 0; 
+            background: var(--box-bg); 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .item-title { 
+            padding: 15px 18px !important; 
+            cursor: pointer; 
+            font-size: 16px !important;
+            font-weight: 700 !important; 
+            border-bottom: 1px solid var(--border-color); 
+            color: var(--text-color);
+            border-radius: 10px !important;
+            margin-bottom: 8px !important;
+        }
+        .ingredients-list { 
+            padding: 15px; 
+            background: var(--box-bg); 
+            line-height: 2; 
+            font-weight: bold; 
+            display: none; 
+            color: var(--text-color);
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+        .search-box { 
+            width: 100%; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            border: 2px solid rgba(139, 0, 0, 0.2); 
+            border-radius: 14px; 
+            box-sizing: border-box; 
+            background: rgba(255, 255, 255, 0.95); 
+            color: var(--text-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        body.dark-mode #searchInput, 
+        .dark #searchInput, 
+        [data-theme="dark"] #searchInput {
+            background-color: #000000 !important; 
+            color: #ffffff !important;           
+        }
+        input.qty { 
+            width: 90px !important; 
+            padding: 10px 14px !important; 
+            border: 1px solid var(--border-color, #444) !important; 
+            border-radius: 8px !important; 
+            background: var(--bg-color, #121212) !important; 
+            color: var(--text-color, #fff) !important;
+            font-size: 17px !important;
+            text-align: center;
+        }
+        button { 
+            background: var(--primary-red); 
+            color: white; 
+            border: none; 
+            padding: 14px 22px !important; 
+            cursor: pointer; 
+            border-radius: 12px !important; 
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transition: all 0.2s ease !important;
+        }
+        button:active {
+            transform: scale(0.97);
+        }
+        button:hover {
+            background-color: var(--primary-red-hover);
+        }
+
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(25px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .item-container {
+            animation: slideUpFade 0.5s ease forwards;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شريط البحث والمحتوى -->
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 ابحث عن صنف..." onkeyup="searchItems()">
+    <div id="mainContent"></div>
+
+    <script>
+        // 1. كود ستايلات الإضافات والتنسيقات
+        window.addEventListener("DOMContentLoaded", () => {
+            let customStyle = document.createElement("style");
+            customStyle.innerHTML = `
+                button {
+                    padding: 14px 22px !important;
+                    font-size: 16px !important;
+                    font-weight: 600 !important;
+                    border-radius: 12px !important;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                }
+                button:active {
+                    transform: scale(0.97);
+                }
+                
+                input.qty {
+                    padding: 10px 14px !important;
+                    font-size: 17px !important;
+                    border-radius: 8px !important;
+                    border: 1px solid var(--border-color, #444) !important;
+                    width: 90px !important;
+                    text-align: center;
+                    background: var(--bg-color, #121212) !important;
+                    color: var(--text-color, #fff) !important;
+                }
+
+                .category-title {
+                    padding: 18px 22px !important;
+                    font-size: 18px !important;
+                    font-weight: 800 !important;
+                    border-radius: 12px !important;
+                    margin-bottom: 12px !important;
+                    letter-spacing: 0.5px;
+                    cursor: pointer;
+                }
+
+                .item-title {
+                    padding: 15px 18px !important;
+                    font-size: 16px !important;
+                    font-weight: 700 !important;
+                    border-radius: 10px !important;
+                    margin-bottom: 8px !important;
+                    cursor: pointer;
+                }
+            `;
+            document.head.appendChild(customStyle);
+        });
+
+        // 2. شاشة الحماية وتسجيل الدخول
+        window.addEventListener("DOMContentLoaded", () => {
+// if (localStorage.getItem("app_logged_in") === "true") {
+//     return;
+// }
+                 let oldScreen = document.getElementById("app-login-screen");
+            if (oldScreen) oldScreen.remove();
+
+            let loginScreen = document.createElement("div");
+            loginScreen.id = "app-login-screen";
+            loginScreen.style.cssText = `
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                background: #ffffff !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: space-around !important;
+                z-index: 2147483647 !important;
+                padding: 40px 20px !important;
+                box-sizing: border-box !important;
+                font-family: sans-serif !important;
+                transition: opacity 1s ease;
+            `;
+
+            loginScreen.innerHTML = `
+                <div style="text-align: center; margin-top: 10px;">
+                    <h3 style="color: #ff3b3b; font-size: 20px; margin: 0 0 5px 0; font-weight: bold;">تم الإغلاق من قبل الإعداد</h3>
+                    <p style="color: #666666; font-size: 14px; margin: 0;">(Salah Housam)</p>
+                </div>
+
+                <div style="
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                ">
+                    <img src="https://i.postimg.cc/gJNqvcVk/abo-alabed-lwjw.png" alt="فروج أبو العبد" style="
+                        width: 100%;
+                        max-width: 400px;
+                        height: auto;
+                        object-fit: contain;
+                        mix-blend-mode: multiply;
+                        filter: contrast(110%) saturate(115%);
+                        animation: smoothZoomIn 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                    ">
+                </div>
+
+                <div style="width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
+                    <p style="color: #444; font-size: 15px; text-align: center; margin: 0;">يرجى إدخال كلمة المرور</p>
+                    <input type="password" id="app-password-input" placeholder="اكتب كلمة المرور..." style="
+                        width: 100%;
+                        padding: 16px;
+                        font-size: 16px;
+                        border: 2px solid #ddd;
+                        border-radius: 12px;
+                        outline: none;
+                        text-align: center;
+                        background: #f9f9f9;
+                        box-sizing: border-box;
+                    ">
+                    <button id="app-login-btn" style="
+                        width: 100%;
+                        padding: 16px;
+                        font-size: 18px;
+                        font-weight: bold;
+                        color: #ffffff;
+                        background: #b30000;
+                        border: none;
+                        border-radius: 12px;
+                        cursor: pointer;
+                        box-shadow: 0 4px 15px rgba(179, 0, 0, 0.3);
+                    ">دخول</button>
+                </div>
+                <style>
+                    @keyframes smoothZoomIn {
+                        0% { transform: scale(0.1); opacity: 0; }
+                        100% { transform: scale(1); opacity: 1; }
+                    }
+                </style>
+            `;
+            
+            document.body.appendChild(loginScreen);
+
+            document.getElementById("app-login-btn").addEventListener("click", () => {
+                let pass = document.getElementById("app-password-input").value;
+                if(pass === "9090") { 
+                    localStorage.setItem("app_logged_in", "true");
+                    let screen = document.getElementById("app-login-screen");
+                    screen.style.opacity = "0";
+                    setTimeout(() => screen.remove(), 500);
+                } else {
+                    alert("كلمة المرور غير صحيحة!");
+                }
+            });
+        });
+
+        let currentLang = 'ar';
+
+        // 3. شريط التحكم والدارك مود وتبديل اللغة
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!document.body.hasAttribute("data-theme")) {
+                document.body.setAttribute("data-theme", "dark");
+            }
+
+            let toolbar = document.createElement('div');
+            toolbar.className = 'master-toolbar';
+            toolbar.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: var(--box-bg, #1e1e1e); padding: 12px 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border-color, #333); box-shadow: 0 2px 8px rgba(0,0,0,0.2);";
+            
+            let titleSpan = document.createElement('span');
+            titleSpan.innerHTML = "<b>Farooj Abu Al-Abd</b>";
+            titleSpan.style.cssText = "font-weight: 900; font-size: 18px; color: var(--text-color, #fff); letter-spacing: 0.5px;";
+
+            let btnContainer = document.createElement('div');
+            btnContainer.style.cssText = "display: flex; gap: 10px; align-items: center;";
+
+            // زرار اللغة
+            let langBtn = document.createElement('button');
+            langBtn.className = 'lang-btn-master';
+            langBtn.innerHTML = '🌐 English';
+            langBtn.onclick = function() {
+                currentLang = currentLang === 'ar' ? 'en' : 'ar';
+                document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+                document.documentElement.setAttribute('lang', currentLang);
+                langBtn.innerHTML = currentLang === 'ar' ? '🌐 English' : '🌐 عربي';
+                document.getElementById('searchInput').placeholder = currentLang === 'ar' ? "🔍 ابحث عن صنف..." : "🔍 Search for item...";
+                render();
+            };
+
+            // زرار الثيم
+            let themeBtn = document.createElement('button');
+            themeBtn.className = 'theme-btn-master';
+            themeBtn.innerHTML = document.body.getAttribute("data-theme") === "dark" ? '🌙 Dark Mode' : '☀️ Light Mode';
+            
+            themeBtn.onclick = function() {
+                let body = document.body;
+                let currentTheme = body.getAttribute("data-theme");
+                if (currentTheme === "dark") {
+                    body.setAttribute("data-theme", "light");
+                    themeBtn.innerHTML = '☀️ Light Mode';
+                } else {
+                    body.setAttribute("data-theme", "dark");
+                    themeBtn.innerHTML = '🌙 Dark Mode';
+                }
+            };
+
+            btnContainer.appendChild(langBtn);
+            btnContainer.appendChild(themeBtn);
+
+            toolbar.appendChild(titleSpan);
+            toolbar.appendChild(btnContainer);
+            document.body.insertBefore(toolbar, document.getElementById('searchInput'));
+            
+            render();
+        });
+
+        // 4. دالة فحص الـ 30 يوم للصنف الجديد
+        function isItemNew(itemDate) {
+            if (!itemDate) return false;
+            let added = new Date(itemDate);
+            let now = new Date("2026-07-25");
+            let diffDays = (now - added) / (1000 * 60 * 60 * 24);
+            return diffDays >= 0 && diffDays <= 30;
+        }
+
+        function categoryHasNew(catItems) {
+            if (!catItems) return false;
+            return catItems.some(item => isItemNew(item.dateAdded));
+        }
+
+        // 5. قاعدة بيانات الأصناف
+        const menu = [
+            {
+                cat: "الصوصات", cat_en: "Sauces", items: [
+                    {n: "وردي", n_en: "Pink Sauce", b: 1, d: "بهار:400g\nزيت:6l\nثلج:1k\nبيضة:30", d_en: "Spices:400g\nOil:6l\nIce:1k\nEgg:30"},
+                    {n: "اسبايسي", n_en: "Spicy Sauce", b: 1, d: "بهار:500g\nشطة:420g\nزيت:6l\nثلج:1k\nبيضة:30", d_en: "Spices:500g\nHot Sauce:420g\nOil:6l\nIce:1k\nEgg:30"},
+                    {n: "ساندويتش", n_en: "Sandwich Sauce", b: 1, d: "بهار:350g\nبيض:8\nخل:20g\nمياه:1.5l\nزيت:2l", d_en: "Spices:350g\nEggs:8\nVinegar:20g\nWater:1.5l\nOil:2l"},
+                    {n: "ثوم", n_en: "Garlic Sauce", b: 1, d: "نشا:3.5k\nثلج:500g\nزيت:4l\nمياه:150g\nثوم:150g\nبيض بياض:10\nبيض كامل:8\nملح:90g\nملح ليمون:45g", d_en: "Starch:3.5k\nIce:500g\nOil:4l\nWater:150g\nGarlic:150g\nEgg Whites:10\nWhole Eggs:8\nSalt:90g\nCitric Acid:45g"},
+                    {n: "فتوش", n_en: "Fattoush Sauce", b: 1, d: "ليمون:100g\nسماق:10g\nملح:15g\nزيت زيتون:400g\nدبس رمان:300g", d_en: "Lemon:100g\nSumac:10g\nSalt:15g\nOlive Oil:400g\nPomegranate Molasses:300g"},
+                     
+                    {n: "تبولة", n_en: "Tabbouleh Dressing", b: 1, d: "زيت زيتون:500g\nليمون:500g\nملح:30g", d_en: "Olive Oil:500g\nLemon:500g\nSalt:30g"},
+                    {n: "مقانق", n_en: "Makanek Sauce", b: 1, d: "مايونيز:1k\nمستردة:150g\nريستر:50g", d_en: "Mayonnaise:1k\nMustard:150g\nWorcestershire:50g"},
+                    {n: "حريقة", n_en: "Hariga Sauce", b: 1, d: "مايونيز:360g\nكاتشب:100g\nسويت تشيلي:60g\nدبس فليفلة:80g\nسيراتشا:50g\nخردل:20g\nخل:20g\nليمون:20g\nثوم بودر:8g\nبابريكا:8g\nملح:4g\nصبغة:4g\nفلفل حار:75g", d_en: "Mayonnaise:360g\nKetchup:100g\nSweet Chili:60g\nPepper Paste:80g\nSriracha:50g\nMustard:20g\nVinegar:20g\nLemon:20g\nGarlic Powder:8g\nPaprika:8g\nSalt:4g\nColoring:4g\nHot Pepper:75g"},
+                    {n: "أفخاذ", n_en: "Thighs Sauce", b: 1, d: "مايونيز:1k\nفلفل أسود:2g\nبابريكا:2g\nملح:2g\nمستردة:25g\nدبس فليفلة:65g\nدبس رمان:65g\nكاتشب:100g", d_en: "Mayonnaise:1k\nBlack Pepper:2g\nPaprika:2g\nSalt:2g\nMustard:25g\nPepper Paste:65g\nPomegranate Molasses:65g\nKetchup:100g"}
+                ]
+            },
+            {
+                cat: "التتبيلات", cat_en: "Marinades", items: [
+                    {n: "مسحب", n_en: "Mousahab", b: 1, d: "مياه:1l\nخل:1l\nملح:100g\nزيت:2l\nبهار مسحب:350g\nثوم:200g\nشطة:250g\nصلصة:750g\nزيت زيتون:200g", d_en: "Water:1l\nVinegar:1l\nSalt:100g\nOil:2l\nMousahab Spice:350g\nGarlic:200g\nHot Sauce:250g\nPaste:750g\nOlive Oil:200g"},
+                    {n: "طاووق", n_en: "Shish Tawook", b: 1, d: "زيت:4l\nليمون:750g\nبهار طاووق:400g\nثوم:400g\nشطة:475g\nكاتشب:750g\nصلصة:750g\nزيت زيتون:200g", d_en: "Oil:4l\nLemon:750g\nTawook Spice:400g\nGarlic:400g\nHot Sauce:475g\nKetchup:750g\nPaste:750g\nOlive Oil:200g"},
+                    {n: "تكا لحم", n_en: "Meat Tikka", b: 1, d: "لوي:5g\nفلفل أسود:10g\nملح:10g\nملح ليمون:2g\nزبادي:100g\nجوزة الطيب:5g\nبهار تكا:100g\nزيت:100g\nكيوي:50g", d_en: "Cloves:5g\nBlack Pepper:10g\nSalt:10g\nCitric Acid:2g\nYogurt:100g\nNutmeg:5g\nTikka Spice:100g\nOil:100g\nKiwi:50g"},
+                    {n: "جوانح", n_en: "Wings", b: 1, d: "ملح:10g\nثوم بودر:10g\nبصل بودر:10g\nبابريكا:10g\nفلفل أسود:10g\nشطة:5g\nكاري:5g\nكزبرة:5g\nصلصة:140g\nزيت قلي:200g", d_en: "Salt:10g\nGarlic Powder:10g\nOnion Powder:10g\nPaprika:10g\nBlack Pepper:10g\nHot Sauce:5g\nCurry:5g\nCoriander:5g\nPaste:140g\nFrying Oil:200g"}
+                ]
+            },
+            {
+                cat: "الفرم", cat_en: "Minced Items", items: [
+                  {n: "كباب لحم", n_en: "Meat Kabab", b: 5, d: "لحم:5k\nلية:1k\nبصل:175g\nفلفل اخضر:60g\nبقدونس:175g\nملح:55g\nبابريكا:5g\nفلفل أسود:10g\nفلفل أبيض:10g\nبهار حلو:10g\nقرفة:10g\nزنجبيل:10g\nبصل بودر:10g\nثوم بودر:10g", d_en: "Meat:5k\nFat:1k\nOnion:175g\nGreen Pepper:60g\nParsley:175g\nSalt:55g\nPaprika:5g\nBlack Pepper:10g\nWhite Pepper:10g\nAllspice:10g\nCinnamon:10g\nGinger:10g\nOnion Powder:10g\nGarlic Powder:10g"},
+                    {n: "مقانق مع مصران", n_en: "Makanek with Casing", b: 1, d: "لحمه:1k\nخل:12.5g\nبهار لحم:10g\nقرفه:2.5g\nفلفل اسود:2.5g\nقرنفل:2.5g\nجوز الطيب:2.5g\nملح:12.5g\nماء:50g\nبابريكا:12.5g\nكزبره بودر:10g\nمصران:100g", d_en: "Meat:1k\nVinegar:12.5g\nMeat Spice:10g\nCinnamon:2.5g\nBlack Pepper:2.5g\nCloves:2.5g\nNutmeg:2.5g\nSalt:12.5g\nWater:50g\nPaprika:12.5g\nCoriander Powder:10g\nCasing:100g"},
+                    {n: "كباب دجاج", n_en: "Chicken Kabab", b: 1, d: "دجاج:1k\nلية:25g\nالتوابل (فلفل أبيض، فلفل أسود، ثوم باودر، بصل باودر، زنجبيل باودر):2g\nبابريكا:5g\nملح:10g\nدبس فليفلة:5g\nبقدونس:10g\nفلفل:10g\nبصل:50g\nثوم:5g", d_en: "Chicken:1k\nFat:25g\nSpices (White Pepper, Black Pepper, Garlic P., Onion P., Ginger P.):2g\nPaprika:5g\nSalt:10g\nPepper Paste:5g\nParsley:10g\nPepper:10g\nOnion:50g\nGarlic:5g"}
+                ]
+            },
+            {
+                cat: "المقبلات", cat_en: "Appetizers", items: [
+                    {n: "كول سلو", n_en: "Coleslaw", b: 1, d: "ملفوف:500g\nمايونيز:250g\nسكر:15g\nحليب:80g\nجزر:50g\nخل:5g", d_en: "Cabbage:500g\nMayonnaise:250g\nSugar:15g\nMilk:80g\nCarrot:50g\nVinegar:5g"},
+                    {n: "حمص", n_en: "Hummus", b: 1, d: "حمص:2.5k\nطحينة:700g\nزيت:500g\nملح:35g\nملح ليمون:15g", d_en: "Chickpeas:2.5k\nTahini:700g\nOil:500g\nSalt:35g\nCitric Acid:15g"},
+                    {n: "متبل", n_en: "Mtabbal", b: 1, d: "باذنجان:1k\nطحينة:300g\nملح:15g\nملح ليمون:5g\nزيت:20g\nزبادي:20g", d_en: "Eggplant:1k\nTahini:300g\nSalt:15g\nCitric Acid:5g\nOil:20g\nYogurt:20g"},
+                    {n: "سلطة تكا", n_en: "Tikka Salad", b: 1, d: "طماطم:1k\nبصل:100g\nثوم:5g\nسماق:5g\nفلفل أسود:2g\nملح:8g\nزيت زيتون:30g", d_en: "Tomato:1k\nOnion:100g\nGarlic:5g\nSumac:5g\nBlack Pepper:2g\nSalt:8g\nOlive Oil:30g"},
+                    {n: "سلطة زيرو كارب", n_en: "Zero Carb Salad", b: 1, d: "زعتر:15g\nبقلة:15g\nنعناع:15g\nخس أمريكي:45g\nفجل:20g\nخيار:35g\nفلفل أحمر:20g\nبصل أخضر:10g\nروكا:45g\nصدر دجاج مشوي:100g\nصوص التبولة: حسب الطلب", d_en: "Thyme:15g\nPurslane:15g\nMint:15g\nIceberg Lettuce:45g\nRadish:20g\nCucumber:35g\nRed Pepper:20g\nGreen Onion:10g\nArugula:45g\nGrilled Chicken Breast:100g\nTabbouleh Dressing: As requested", dateAdded: "2026-07-25"},
+                    {n: "طحينة", n_en: "Tahini Sauce", b: 1, d: "طحينة:1.4k\nزبادي:500g\nملح:25g\nملح ليمون:5g\nمياه بارد:1.4l", d_en: "Tahini:1.4k\nYogurt:500g\nSalt:25g\nCitric Acid:5g\nCold Water:1.4l"},
+                    {n: "فتولة", n_en: "Fattouleh", b: 1, d: "خس كابوتشا:0.03k\nطماطم:0.05k\nبقدونس:0.03k\nزعتر طازج:0.005k\nبقلة:0.005k\nخيار:0.03k\nبصل أخضر طازج:0.015k\nبذور رمان طازجة:0.01k\nفجل:0.015k\nفلفل أخضر:0.02k\nنعناع طازج:0.005k\nبرغل:0.015k\nصوص فتوش:0.075k", d_en: "Lettuce:0.03k\nTomato:0.05k\nParsley:0.03k\nFresh Thyme:0.005k\nPurslane:0.005k\nCucumber:0.03k\nGreen Onion:0.015k\nPomegranate Seeds:0.01k\nRadish:0.015k\nGreen Pepper:0.02k\nFresh Mint:0.005k\nBulgur:0.015k\nFattoush Sauce:0.075k"}
+                ]
+            },
+            {
+                cat: "الرز", cat_en: "Rice", items: [
+                    {n: "رز أبو العبد", n_en: "Abu Al-Abed Rice", b: 1, d: "رز:1k\nمياه:2l\nملح صيني:5g\nملح:20g\nفلفل أسود:2g\nكاري:5g\nزنجبيل:2g\nقرفة:1\nهيل:1\nزعفران:2g\nبصل:60g\nزبدة:50g\nزيت:50g\nماجي:4", d_en: "Rice:1k\nWater:2l\nChinese Salt:5g\nSalt:20g\nBlack Pepper:2g\nCurry:5g\nGinger:2g\nCinnamon:1\nCardamom:1\nSaffron:2g\nOnion:60g\nButter:50g\nOil:50g\nMaggi:4"},
+                    {n: "الدقوس", n_en: "Daqous Sauce", b: 1, d: "طماطم طازج:5k\nزيت الذرة:40g\nمعجون طماطم:550g\nثوم:40g\nملح:20g\nبودرة كزبرة:10g\nفلفل اسود:5g\nمكعبات ماجي:2\nماء ورد:10g\nبودرة زعفران:2g\nبصل مفروم:50g", d_en: "Fresh Tomato:5k\nCorn Oil:40g\nTomato Paste:550g\nGarlic:40g\nSalt:20g\nCoriander Powder:10g\nBlack Pepper:5g\nMaggi Cubes:2\nRose Water:10g\nSaffron Powder:2g\nMinced Onion:50g"}
+                ]
+            },
+            {
+                cat: "المشروبات", cat_en: "Beverages", items: [
+                    {n: "اللبن", n_en: "Laban", b: 1, d: "عصير ليمون:25g\nملح:5g\nثلج:100g", d_en: "Lemon Juice:25g\nSalt:5g\nIce:100g"},
+                    {n: "برتقال", n_en: "Orange Juice", b: 1, d: "ثلج:3 مكعبات\nبرتقال:3 حبات", d_en: "Ice:3 cubes\nOrange:3 pcs"},
+                    {n: "خوخ برتقال", n_en: "Peach Orange", b: 1, d: "برتقال:2 حبتين\nخوخ:1 حبة\nسكر:2 ملعقة", d_en: "Orange:2 pcs\nPeach:1 pc\nSugar:2 spoons"},
+                    {n: "ليموندا", n_en: "Lemonade", b: 1, d: "برتقال:2 حبتين\nليمون:1 حبة\nسكر:2 ملعقة", d_en: "Orange:2 pcs\nLemon:1 pc\nSugar:2 spoons"}
+                ]
+            }
+        ];
+
+        function render() {
+            let html = "";
+            menu.forEach(cat => {
+                let catName = currentLang === 'ar' ? cat.cat : cat.cat_en;
+                let catBadge = categoryHasNew(cat.items) 
+                    ? ` <span style="background: #ff4757; color: white; padding: 2px 8px; border-radius: 50px; font-size: 11px; margin-right: 8px;">${currentLang === 'ar' ? 'جديد' : 'NEW'}</span>` 
+                    : '';
+
+                html += `<div class="category-title" onclick="toggleCat(this)">${catName} ${catBadge}</div>
+                         <div class="cat-content">`;
+                
+                cat.items.forEach(item => {
+                    let itemName = currentLang === 'ar' ? item.n : (item.n_en || item.n);
+                    let itemDesc = currentLang === 'ar' ? item.d : (item.d_en || item.d);
+                    
+                    let itemBadge = isItemNew(item.dateAdded) 
+                        ? ' <span style="background: #ff4757; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-right: 6px;">NEW</span>' 
+                        : '';
+
+                    html += `<div class="item-container">
+                                <div class="item-title" onclick="toggleItem(this)">${itemName} ${itemBadge}</div>
+                                <div class="ingredients-list">
+                                    ${itemDesc.replace(/\n/g, '<br>')}
+                                    <div style="margin-top:15px; display: flex; align-items: center; gap: 10px;">
+                                        ${currentLang === 'ar' ? 'الكمية:' : 'Quantity:'} 
+                                        <input type="number" class="qty" value="${item.b}"> 
+                                        <button onclick="calc(this, ${item.b}, \`${itemDesc}\`, \`${itemName}\`)">${currentLang === 'ar' ? 'حساب' : 'Calculate'}</button>
+                                    </div>
+                                </div>
+                             </div>`;
+                });
+                html += `</div>`;
+            });
+            document.getElementById('mainContent').innerHTML = html;
+        }
+
+        function toggleCat(el) { el.nextElementSibling.style.display = (el.nextElementSibling.style.display === "block") ? "none" : "block"; }
+        function toggleItem(el) { el.nextElementSibling.style.display = (el.nextElementSibling.style.display === "block") ? "none" : "block"; }
+
+        function searchItems() {
+            let val = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.item-container').forEach(item => {
+                let titleText = item.querySelector('.item-title').innerText.toLowerCase();
+                item.style.display = titleText.includes(val) ? "block" : "none";
+            });
+        }
+
+        // 6. دالة الحساب والنافذة المنبثقة (نسخ وواتساب)
+        function calc(btn, baseWeight, d, customItemName) {
+            let parent = btn.parentElement.parentElement;
+            let itemName = customItemName || (currentLang === 'ar' ? "الوصفة" : "Recipe");
+            
+            let qtyInput = parent.querySelector('.qty');
+            let current = qtyInput ? parseFloat(qtyInput.value) : baseWeight;
+            let mult = current / baseWeight;
+            let lines = d.split('\n');
+            
+            let resText = currentLang === 'ar' 
+                ? `مقادير (${itemName}) لكمية ${current}:\n` 
+                : `Ingredients for (${itemName}) qty ${current}:\n`;
+            
+            lines.forEach(item => {
+                let m = item.match(/^(.+?):(\d+\.?\d*)(.*)/);
+                if(m) {
+                    let name = m[1].trim();
+                    let originalVal = parseFloat(m[2]);
+                    let unit = m[3].trim(); 
+                    let calculatedVal = (originalVal * mult).toFixed(2).replace(/\.00$/, '');
+                    resText += "\n" + name + ": " + calculatedVal + unit;
+                } else {
+                    resText += "\n" + item;
+                }
+            });
+
+            let existingModal = document.getElementById('custom-modal');
+            if (existingModal) existingModal.remove();
+
+            let modal = document.createElement('div');
+            modal.id = 'custom-modal';
+            modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:99999;";
+            
+            modal.innerHTML = `
+                <div style="background: var(--box-bg, #1e1e1e); color: var(--text-color, #fff); padding: 20px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; border: 1px solid var(--border-color, #333); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                    <h3 style="margin-top:0; color: #d32f2f; font-size: 18px; border-bottom: 2px solid var(--border-color, #333); padding-bottom: 8px;">${itemName}</h3>
+                    <p style="margin: 5px 0 10px 0; font-size: 13px; opacity: 0.8;">${currentLang === 'ar' ? 'الكمية لـ:' : 'Qty for:'} ${current}</p>
+                    <textarea id="copy-text" style="width:100%; height:130px; background:var(--bg-color, #121212); color:var(--text-color, #fff); border:1px solid var(--border-color, #333); border-radius:6px; padding:10px; resize:none; font-family:sans-serif; box-sizing:border-box;" readonly>${resText}</textarea>
+                    
+                    <div style="margin-top: 15px; display: flex; gap: 8px;">
+                        <button onclick="copyRecipeText()" style="flex:1; background:#4CAF50;">📋 ${currentLang === 'ar' ? 'نسخ' : 'Copy'}</button>
+                        <button onclick="sendToWhatsApp()" style="flex:1; background:#25D366;">💬 WhatsApp</button>
+                    </div>
+                    
+                    <button onclick="document.getElementById('custom-modal').remove()" style="width:100%; margin-top: 8px; background:#d32f2f;">${currentLang === 'ar' ? 'إغلاق' : 'Close'}</button>
+                    <p id="copy-status" style="color:#4CAF50; font-size:12px; margin-top:8px; display:none;">${currentLang === 'ar' ? 'تم النسخ بنجاح! 🚀' : 'Copied successfully! 🚀'}</p>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function copyRecipeText() {
+            let textarea = document.getElementById('copy-text');
+            textarea.select();
+            navigator.clipboard.writeText(textarea.value).then(() => {
+                let status = document.getElementById('copy-status');
+                status.style.display = "block";
+                setTimeout(() => { 
+                    status.style.display = "none"; 
+                    document.getElementById('custom-modal').remove(); 
+                }, 1500);
+            });
+        }
+
+        function sendToWhatsApp() {
+            let textarea = document.getElementById('copy-text');
+            let encodedText = encodeURIComponent(textarea.value);
+            window.open('https://api.whatsapp.com/send?text=' + encodedText, '_blank');
+            document.getElementById('custom-modal').remove();
+        }
+    </script>
+<style>
+</body>
+</html>
