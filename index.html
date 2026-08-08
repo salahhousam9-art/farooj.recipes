@@ -138,12 +138,12 @@
 </head>
 <body>
 
-    <!-- شريط البحث والمحتوى -->
+    <!--  -->
     <input type="text" id="searchInput" class="search-box" placeholder="🔍 ابحث عن صنف..." onkeyup="searchItems()">
     <div id="mainContent"></div>
 
     <script>
-        // 1. كود ستايلات الإضافات والتنسيقات
+        // 1. 
         window.addEventListener("DOMContentLoaded", () => {
             let customStyle = document.createElement("style");
             customStyle.innerHTML = `
@@ -193,7 +193,7 @@
             document.head.appendChild(customStyle);
         });
 
-        // 2. شاشة الحماية وتسجيل الدخول
+        // 2. 
         window.addEventListener("DOMContentLoaded", () => {
 // if (localStorage.getItem("app_logged_in") === "true") {
 //     return;
@@ -295,7 +295,7 @@
 
         let currentLang = 'ar';
 
-        // 3. شريط التحكم والدارك مود وتبديل اللغة
+        // 3. 
         window.addEventListener('DOMContentLoaded', () => {
             if (!document.body.hasAttribute("data-theme")) {
                 document.body.setAttribute("data-theme", "dark");
@@ -312,7 +312,7 @@
             let btnContainer = document.createElement('div');
             btnContainer.style.cssText = "display: flex; gap: 10px; align-items: center;";
 
-            // زرار اللغة
+            // 
             let langBtn = document.createElement('button');
             langBtn.className = 'lang-btn-master';
             langBtn.innerHTML = '🌐 English';
@@ -325,7 +325,7 @@
                 render();
             };
 
-            // زرار الثيم
+            //
             let themeBtn = document.createElement('button');
             themeBtn.className = 'theme-btn-master';
             themeBtn.innerHTML = document.body.getAttribute("data-theme") === "dark" ? '🌙 Dark Mode' : '☀️ Light Mode';
@@ -352,7 +352,7 @@
             render();
         });
 
-        // 4. دالة فحص الـ 30 يوم للصنف الجديد
+        // 4. 
         function isItemNew(itemDate) {
             if (!itemDate) return false;
             let added = new Date(itemDate);
@@ -471,7 +471,7 @@
             });
         }
 
-        // 6. دالة الحساب والنافذة المنبثقة (نسخ وواتساب)
+        // 6. 
         function calc(btn, baseWeight, d, customItemName) {
             let parent = btn.parentElement.parentElement;
             let itemName = customItemName || (currentLang === 'ar' ? "الوصفة" : "Recipe");
