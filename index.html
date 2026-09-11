@@ -503,16 +503,29 @@
                 : `Ingredients for (${itemName}) qty ${current}:\n`;
             
             lines.forEach(item => {
-                let m = item.match(/^(.+?):(\d+\.?\d*)(.*)/);
-                if(m) {
-                    let name = m[1].trim();
-                    let originalVal = parseFloat(m[2]);
-                    let unit = m[3].trim(); 
-                    let calculatedVal = (originalVal * mult).toFixed(2).replace(/\.00$/, '');
-                    resText += "\n" + name + ": " + calculatedVal + unit;
-                } else {
-                    resText += "\n" + item;
-                }
+        let m = item.match(/(.+?):(\d+\.?\d*)(.*)/);
+        if (m) {
+            let name = m[1].trim();
+            let originalVal = parseFloat(m[2]);
+            let unit = m[3].trim();
+            
+            let calculatedVal = originalVal * mult;
+            
+            if (unit === 'k' && calculatedVal < 1) {
+                calculatedVal = Math.round(calculatedVal * 1000);
+                unit = 'g';
+            } else if (unit === 'k') {
+                calculatedVal = parseFloat(calculatedVal.toFixed(2));
+            } else {
+                let decimals = calculatedVal < 1 ? 2 : 1;
+                calculatedVal = parseFloat(calculatedVal.toFixed(decimals));
+            }
+            
+            resText += "\n" + name + ": " + calculatedVal + unit;
+        } else {
+            resText += "\n" + item;
+        }
+    });
             });
 
            let existingModal = document.getElementById('custom-modal');
