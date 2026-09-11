@@ -463,13 +463,30 @@
         function toggleCat(el) { el.nextElementSibling.style.display = (el.nextElementSibling.style.display === "block") ? "none" : "block"; }
         function toggleItem(el) { el.nextElementSibling.style.display = (el.nextElementSibling.style.display === "block") ? "none" : "block"; }
 
-        function searchItems() {
-            let val = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.item-container').forEach(item => {
-                let titleText = item.querySelector('.item-title').innerText.toLowerCase();
-                item.style.display = titleText.includes(val) ? "block" : "none";
-            });
+       function searchItems() {
+    let input = document.getElementById('searchInput').value.toLowerCase();
+    let categories = document.querySelectorAll('.cat-content');
+    let items = document.querySelectorAll('.item-container');
+
+    if (input === "") {
+        items.forEach(item => item.style.display = "block");
+        categories.forEach(cat => cat.style.display = "none");
+        return;
+    }
+
+    items.forEach(item => {
+        let text = item.textContent.toLowerCase();
+        if (text.includes(input)) {
+            item.style.display = "block";
+            let parentCat = item.closest('.cat-content');
+            if (parentCat) {
+                parentCat.style.display = "block";
+            }
+        } else {
+            item.style.display = "none";
         }
+    });
+}
 
         // 6. 
         function calc(btn, baseWeight, d, customItemName) {
