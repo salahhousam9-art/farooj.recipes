@@ -516,31 +516,27 @@
             });
 
            let existingModal = document.getElementById('custom-modal');
-if (existingModal) existingModal.remove();
+            if (existingModal) existingModal.remove();
 
-let modal = document.createElement('div');
-modal.id = 'custom-modal';
-modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center;";
-
-modal.innerHTML = `
-    <div style="background: var(--box-bg, #1e1e1e); color: var(--text-color, #fff); padding: 20px; border-radius: 8px; width: 90%; max-width: 400px;">
-        <h3 style="margin-top:0; color: #d32f2f; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${customItemName || itemName}</h3>
-        <p style="margin: 5px 0 10px 0; font-size: 13px; opacity: 0.8;">الكمية لـ: ${current}</p>
-        <textarea id="copy-text" style="width:100%; height:130px; background:var(--bg-color); color:var(--text-color);">${resText}</textarea>
-        <div style="margin-top: 15px; display: flex; gap: 8px;">
-            <button onclick="copyRecipeText()" style="flex:1; background:#2e7d32; color:#fff; border:none; padding:8px; border-radius:4px; cursor:pointer;">نسخ</button>
-            <button onclick="sendToWhatsApp()" style="flex:1; background:#25d366; color:#fff; border:none; padding:8px; border-radius:4px; cursor:pointer;">WhatsApp</button>
-        </div>
-        <button onclick="document.getElementById('custom-modal').remove()" style="width:100%; margin-top:10px; background:#d32f2f; color:#fff; border:none; padding:8px; border-radius:4px; cursor:pointer;">إغلاق</button>
-    </div>
-`;
-document.body.appendChild(modal);
+            let modal = document.createElement('div');
+            modal.id = 'custom-modal';
+            modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:99999;";
+            
+            modal.innerHTML = `
+                <div style="background: var(--box-bg, #1e1e1e); color: var(--text-color, #fff); padding: 20px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; border: 1px solid var(--border-color, #333); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                    <h3 style="margin-top:0; color: #d32f2f; font-size: 18px; border-bottom: 2px solid var(--border-color, #333); padding-bottom: 8px;">${itemName}</h3>
+                    <p style="margin: 5px 0 10px 0; font-size: 13px; opacity: 0.8;">${currentLang === 'ar' ? 'الكمية لـ:' : 'Qty for:'} ${current}</p>
+                    <textarea id="copy-text" style="width:100%; height:130px; background:var(--bg-color, #121212); color:var(--text-color, #fff); border:1px solid var(--border-color, #333); border-radius:6px; padding:10px; resize:none; font-family:sans-serif; box-sizing:border-box;" readonly>${resText}</textarea>
+                    
+                    <div style="margin-top: 15px; display: flex; gap: 8px;">
+                        <button onclick="copyRecipeText()" style="flex:1; background:#4CAF50;">📋 ${currentLang === 'ar' ? 'نسخ' : 'Copy'}</button>
+                        <button onclick="sendToWhatsApp()" style="flex:1; background:#25D366;">💬 WhatsApp</button>
+                    </div>
                     
                     <button onclick="document.getElementById('custom-modal').remove()" style="width:100%; margin-top: 8px; background:#d32f2f;">${currentLang === 'ar' ? 'إغلاق' : 'Close'}</button>
                     <p id="copy-status" style="color:#4CAF50; font-size:12px; margin-top:8px; display:none;">${currentLang === 'ar' ? 'تم النسخ بنجاح! 🚀' : 'Copied successfully! 🚀'}</p>
                 </div>
             `;
-            document.body.appendChild(modal);
         }
 
         function copyRecipeText() {
