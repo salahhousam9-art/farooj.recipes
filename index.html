@@ -552,13 +552,13 @@
                 }, 1500);
             });
         }
-
-        function sendToWhatsApp() {
+ function sendToWhatsApp() {
     let text = document.getElementById('copy-text').value;
-    let boldText = "*" + text + "*";
+    let boldText = text.split('\n').map(line => line.trim() ? `*${line}*` : line).join('\n');
     let url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(boldText);
     window.open(url, '_blank');
 }
+      
     </script>
 <style>
 </body>
