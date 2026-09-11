@@ -327,8 +327,9 @@
 
             //
             if (!document.body.getAttribute("data-theme")) {
-    document.body.setAttribute("data-theme", "light");
-}
+              document.body.setAttribute("data-theme", "light"); 
+                }                                                                                                             
+
             let themeBtn = document.createElement('button');
             themeBtn.className = 'theme-btn-master';
             themeBtn.innerHTML = document.body.getAttribute("data-theme") === "dark" ? '🌙 Dark Mode' : '☀️ Light Mode';
