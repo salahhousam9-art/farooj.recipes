@@ -353,10 +353,9 @@
         });
 
         // 4. 
-        // 5. قاعدة البيانات الكاملة مع دعم روابط فيديوهات جوجل درايف
-        const menu = [
+     const menu = [
             {
-                cat: "الصوصات", Cat_en: "Sauces", items: [
+                cat: "الصوصات", cat_en: "Sauces", items: [
                     {n: "وردي", n_en: "Pink Sauce", b: 1, d: "بهار:400g\nزيت:6l\nثلج:1k\nبيضة:30", d_en: "Spices:400g\nOil:6l\nIce:1k\nEgg:30", video: ""},
                     {n: "اسبايسي", n_en: "Spicy Sauce", b: 1, d: "بهار:500g\nشطة:420g\nزيت:6l\nثلج:1k\nبيضة:30", d_en: "Spices:500g\nHot Sauce:420g\nOil:6l\nIce:1k\nEgg:30", video: ""},
                     {n: "ساندويتش", n_en: "Sandwich Sauce", b: 1, d: "بهار:350g\nبيض:8\nخل:20g\nمياه:1.5l\nزيت:2l", d_en: "Spices:350g\nEggs:8\nVinegar:20g\nWater:1.5l\nOil:2l", video: ""},
@@ -410,15 +409,17 @@
             }
         ];
 
-        // دالة العرض (render) الجديدة التي تضع زر الفيديو بجانب زر حساب
         function render(filter = "") {
             let container = document.getElementById('mainContent');
+            if (!container) return;
             container.innerHTML = "";
 
-            menu.forEach((cat) => {
-                let catName = currentLang === 'ar' ? cat.cat : cat.cat_en;
-                let filteredItems = cat.items.filter(item => {
-                    let itemName = currentLang === 'ar' ? item.n : item.n_en;
+            menu.forEach((catObj) => {
+                let catName = (typeof currentLang !== 'undefined' && currentLang === 'en') ? (catObj.cat_en || catObj.cat) : catObj.cat;
+                let itemsList = catObj.items || [];
+
+                let filteredItems = itemsList.filter(item => {
+                    let itemName = (typeof currentLang !== 'undefined' && currentLang === 'en') ? (item.n_en || item.n) : item.n;
                     return itemName.toLowerCase().includes(filter.toLowerCase());
                 });
 
@@ -439,9 +440,14 @@
                 if (filter !== "") contentDiv.style.display = "block";
 
                 filteredItems.forEach((item) => {
-                    let itemName = currentLang === 'ar' ? item.n : item.n_en;
-                    let itemDesc = currentLang === 'ar' ? item.d : item.d_en;
-                    let itemBadge = isItemNew(item.dateAdded) ? ` <span style="background: #ff4757; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px;">NEW</span>` : "";
+                    let itemName = (typeof currentLang !== 'undefined' && currentLang === 'en') ? (item.n_en || item.n) : item.n;
+                    let itemDesc = (typeof currentLang !== 'undefined' && currentLang === 'en') ? (item.d_en || item.d) : item.d;
+                    
+                    let isNew = false;
+                    if (typeof isItemNew === 'function') {
+                        isNew = isItemNew(item.dateAdded);
+                    }
+                    let itemBadge = isNew ? ` <span style="background: #ff4757; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px;">NEW</span>` : "";
 
                     let itemBox = document.createElement('div');
                     itemBox.className = "item-container";
@@ -458,12 +464,15 @@
                     let ingDiv = document.createElement('div');
                     ingDiv.className = "ingredients-list";
                     
+                    let calcText = (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'Calculate' : 'حساب';
+                    let videoText = (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'Video' : 'فيديو';
+
                     ingDiv.innerHTML = `
                         <div style="margin-bottom: 10px; white-space: pre-line;">${itemDesc.replace(/\n/g, '<br>')}</div>
                         <div style="display: flex; gap: 10px; align-items: center; margin-top: 15px;">
                             <input type="number" class="qty" value="${item.b}" min="0.1" step="any">
-                            <button onclick="calc(this, ${item.b}, '${itemDesc.replace(/\n/g, '\\n')}', '${itemName}')">${currentLang === 'ar' ? 'حساب' : 'Calculate'}</button>
-                            <button onclick="openVideo('${item.video || ""}')" style="background: #333; color: #fff;">🎥 ${currentLang === 'ar' ? 'فيديو' : 'Video'}</button>
+                            <button onclick="calc(this, ${item.b}, '${itemDesc.replace(/\n/g, '\\n')}', '${itemName}')">${calcText}</button>
+                            <button onclick="openVideo('${item.video || ""}')" style="background: #333; color: #fff;">🎥 ${videoText}</button>
                         </div>
                     `;
 
@@ -477,12 +486,12 @@
             });
         }
 
-        // دالة فتح الفيديو أو تنبيه الموظف لو الرابط مش موجود
         function openVideo(videoUrl) {
             if (videoUrl && videoUrl.trim() !== "") {
                 window.open(videoUrl, "_blank");
             } else {
-                alert(currentLang === 'ar' ? "عفواً، فيديو التحضير غير متوفر لهذا الصنف حالياً." : "Sorry, the preparation video is currently unavailable for this item.");
+                let msg = (typeof currentLang !== 'undefined' && currentLang === 'en') ? "Sorry, the preparation video is currently unavailable for this item." : "عفواً، فيديو التحضير غير متوفر لهذا الصنف حالياً.";
+                alert(msg);
             }
         }
         function toggleCat(el) { el.nextElementSibling.style.display = (el.nextElementSibling.style.display === "block") ? "none" : "block"; }
