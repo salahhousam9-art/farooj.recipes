@@ -366,71 +366,79 @@
             return catItems.some(item => isItemNew(item.dateAdded));
         }
 
-        // 5. قاعدة بيانات الأصناف
-        const menu = [
-            {
-                cat: "الصوصات", cat_en: "Sauces", items: [
-                    {n: "وردي", n_en: "Pink Sauce", b: 1, d: "بهار:400g\nزيت:6l\nثلج:1k\nبيضة:30", d_en: "Spices:400g\nOil:6l\nIce:1k\nEgg:30"},
-                    {n: "اسبايسي", n_en: "Spicy Sauce", b: 1, d: "بهار:500g\nشطة:420g\nزيت:6l\nثلج:1k\nبيضة:30", d_en: "Spices:500g\nHot Sauce:420g\nOil:6l\nIce:1k\nEgg:30"},
-                    {n: "ساندويتش", n_en: "Sandwich Sauce", b: 1, d: "بهار:350g\nبيض:8\nخل:20g\nمياه:1.5l\nزيت:2l", d_en: "Spices:350g\nEggs:8\nVinegar:20g\nWater:1.5l\nOil:2l"},
-                    {n: "ثوم", n_en: "Garlic Sauce", b: 1, d: "نشا:3.5k\nثلج:500g\nزيت:4l\nمياه:150g\nثوم:150g\nبيض بياض:10\nبيض كامل:8\nملح:90g\nملح ليمون:45g", d_en: "Starch:3.5k\nIce:500g\nOil:4l\nWater:150g\nGarlic:150g\nEgg Whites:10\nWhole Eggs:8\nSalt:90g\nCitric Acid:45g"},
-                    {n: "فتوش", n_en: "Fattoush Sauce", b: 1, d: "ليمون:100g\nسماق:10g\nملح:15g\nزيت زيتون:400g\nدبس رمان:300g", d_en: "Lemon:100g\nSumac:10g\nSalt:15g\nOlive Oil:400g\nPomegranate Molasses:300g"},
-                    {n: "تبولة", n_en: "Tabbouleh Dressing", b: 1, d: "زيت زيتون:500g\nليمون:500g\nملح:30g", d_en: "Olive Oil:500g\nLemon:500g\nSalt:30g"},
-                    {n: "مقانق", n_en: "Makanek Sauce", b: 1, d: "مايونيز:1k\nمستردة:150g\nريستر:50g", d_en: "Mayonnaise:1k\nMustard:150g\nWorcestershire:50g"},
-                    {n: "أفخاذ", n_en: "Thighs Sauce", b: 1, d: "مايونيز:1k\nدبس فليفلة حار:4g\nدبس الرمان:66.5g\nبابريكا:1.6g\nفلفل ابيض:1.6g\nفلفل اسود:4g\nمسترد:25g\nكاتشب:100g\nملح:1.6g\nدبس فليفلة حلو:62.5g", d_en: "Mayonnaise:1k\nHot Pepper Paste:4g\nPomegranate Molasses:66.5g\nPaprika:1.6g\nWhite Pepper:1.6g\nBlack Pepper:4g\nMustard:25g\nKetchup:100g\nSalt:1.6g\nSweet Pepper Paste:62.5g" },
-                    {n: "حريقة", n_en: "Hariga Sauce", b: 1, d: "مايونيز:360g\nكاتشب:100g\nسويت تشيلي:60g\nدبس فليفلة:80g\nسيراتشا:50g\nخردل:20g\nخل:20g\nليمون:20g\nثوم بودر:8g\nبابريكا:8g\nملح:4g\nصبغة:4g\nفلفل حار:75g", d_en: "Mayonnaise:360g\nKetchup:100g\nSweet Chili:60g\nPepper Paste:80g\nSriracha:50g\nMustard:20g\nVinegar:20g\nLemon:20g\nGarlic Powder:8g\nPaprika:8g\nSalt:4g\nColoring:4g\nHot Pepper:75g"},
-                 ]
-            },
-            {   
-                cat: "التتبيلات", cat_en: "Marinades", items: [
-                    {n: "مسحب", n_en: "Mousahab", b: 1, d: "مياه:1l\nخل:1l\nملح:100g\nزيت:2l\nبهار مسحب:350g\nثوم:200g\nشطة:250g\nصلصة:750g\nزيت زيتون:200g", d_en: "Water:1l\nVinegar:1l\nSalt:100g\nOil:2l\nMousahab Spice:350g\nGarlic:200g\nHot Sauce:250g\nPaste:750g\nOlive Oil:200g"},
-                    {n: "طاووق", n_en: "Shish Tawook", b: 1, d: "زيت:4l\nليمون:750g\nبهار طاووق:400g\nثوم:400g\nشطة:475g\nكاتشب:750g\nصلصة:750g\nزيت زيتون:200g", d_en: "Oil:4l\nLemon:750g\nTawook Spice:400g\nGarlic:400g\nHot Sauce:475g\nKetchup:750g\nPaste:750g\nOlive Oil:200g"},
-                    {n: "تكا لحم", n_en: "Meat Tikka", b: 1, d: "لوي:5g\nفلفل أسود:10g\nملح:10g\nملح ليمون:2g\nزبادي:100g\nجوزة الطيب:5g\nبهار تكا:100g\nزيت:100g\nكيوي:50g", d_en: "Cloves:5g\nBlack Pepper:10g\nSalt:10g\nCitric Acid:2g\nYogurt:100g\nNutmeg:5g\nTikka Spice:100g\nOil:100g\nKiwi:50g"},
-                    {n: "جوانح", n_en: "Wings", b: 1, d: "ملح:10g\nثوم بودر:10g\nبصل بودر:10g\nبابريكا:10g\nفلفل أسود:10g\nشطة:5g\nكاري:5g\nكزبرة:5g\nصلصة:140g\nزيت قلي:200g", d_en: "Salt:10g\nGarlic Powder:10g\nOnion Powder:10g\nPaprika:10g\nBlack Pepper:10g\nHot Sauce:5g\nCurry:5g\nCoriander:5g\nPaste:140g\nFrying Oil:200g"}
-                ]
-            },
-            {
-                cat: "الفرم", cat_en: "Minced Items", items: [
-                  {n: "كباب لحم", n_en: "Meat Kabab", b: 5, d: "لحم:5k\nلية:1k\nبصل:175g\nفلفل اخضر:60g\nبقدونس:175g\nملح:55g\nبابريكا:5g\nفلفل أسود:10g\nفلفل أبيض:10g\nبهار حلو:10g\nقرفة:10g\nزنجبيل:10g\nبصل بودر:10g\nثوم بودر:10g", d_en: "Meat:5k\nFat:1k\nOnion:175g\nGreen Pepper:60g\nParsley:175g\nSalt:55g\nPaprika:5g\nBlack Pepper:10g\nWhite Pepper:10g\nAllspice:10g\nCinnamon:10g\nGinger:10g\nOnion Powder:10g\nGarlic Powder:10g"},
-                    {n: "مقانق مع مصران", n_en: "Makanek with Casing", b: 1, d: "لحمه:1k\nخل:12.5g\nبهار لحم:10g\nقرفه:2.5g\nفلفل اسود:2.5g\nقرنفل:2.5g\nجوز الطيب:2.5g\nملح:12.5g\nماء:50g\nبابريكا:12.5g\nكزبره بودر:10g\nمصران:100g", d_en: "Meat:1k\nVinegar:12.5g\nMeat Spice:10g\nCinnamon:2.5g\nBlack Pepper:2.5g\nCloves:2.5g\nNutmeg:2.5g\nSalt:12.5g\nWater:50g\nPaprika:12.5g\nCoriander Powder:10g\nCasing:100g"},
-                    {n: "كباب دجاج", n_en: "Chicken Kabab", b: 1, d: "دجاج:1k\nلية:25g\nالتوابل (فلفل أبيض، فلفل أسود، ثوم باودر، بصل باودر، زنجبيل باودر):2g\nبابريكا:5g\nملح:10g\nدبس فليفلة:5g\nبقدونس:10g\nفلفل:10g\nبصل:50g\nثوم:5g", d_en: "Chicken:1k\nFat:25g\nSpices (White Pepper, Black Pepper, Garlic P., Onion P., Ginger P.):2g\nPaprika:5g\nSalt:10g\nPepper Paste:5g\nParsley:10g\nPepper:10g\nOnion:50g\nGarlic:5g"}
-                ]
-            },
-            {
-                cat: "المقبلات", cat_en: "Appetizers", items: [
-                    {n: "كول سلو", n_en: "Coleslaw", b: 1, d: "ملفوف:500g\nمايونيز:250g\nسكر:15g\nحليب:80g\nجزر:50g\nخل:5g", d_en: "Cabbage:500g\nMayonnaise:250g\nSugar:15g\nMilk:80g\nCarrot:50g\nVinegar:5g"},
-                    {n: "حمص", n_en: "Hummus", b: 1, d: "حمص:2.5k\nطحينة:700g\nزيت:500g\nملح:35g\nملح ليمون:15g", d_en: "Chickpeas:2.5k\nTahini:700g\nOil:500g\nSalt:35g\nCitric Acid:15g"},
-                    {n: "متبل", n_en: "Mtabbal", b: 1, d: "باذنجان:1k\nطحينة:300g\nملح:15g\nملح ليمون:5g\nزيت:20g\nزبادي:20g", d_en: "Eggplant:1k\nTahini:300g\nSalt:15g\nCitric Acid:5g\nOil:20g\nYogurt:20g"},
-                    {n: "سلطة تكا", n_en: "Tikka Salad", b: 1, d: "طماطم:1k\nبصل:100g\nثوم:5g\nسماق:5g\nفلفل أسود:2g\nملح:8g\nزيت زيتون:30g", d_en: "Tomato:1k\nOnion:100g\nGarlic:5g\nSumac:5g\nBlack Pepper:2g\nSalt:8g\nOlive Oil:30g"},
-                    {n: "سلطة زيرو كارب", n_en: "Zero Carb Salad", b: 1, d: "زعتر:15g\nبقلة:15g\nنعناع:15g\nخس أمريكي:45g\nفجل:20g\nخيار:35g\nفلفل أحمر:20g\nبصل أخضر:10g\nروكا:45g\nصدر دجاج مشوي:100g\nصوص التبولة: حسب الطلب", d_en: "Thyme:15g\nPurslane:15g\nMint:15g\nIceberg Lettuce:45g\nRadish:20g\nCucumber:35g\nRed Pepper:20g\nGreen Onion:10g\nArugula:45g\nGrilled Chicken Breast:100g\nTabbouleh Dressing: As requested", dateAdded: "2026-07-25"},
-                    {n: "طحينة", n_en: "Tahini Sauce", b: 1, d: "طحينة:1.4k\nزبادي:500g\nملح:25g\nملح ليمون:5g\nمياه بارد:1.4l", d_en: "Tahini:1.4k\nYogurt:500g\nSalt:25g\nCitric Acid:5g\nCold Water:1.4l"},
-                    {n: "فتولة", n_en: "Fattouleh", b: 1, d: "خس كابوتشا:30g\nطماطم:50g\nبقدونس:30g\nزعتر طازج:5g\nبقلة:5g\nخيار:30g\nبصل أخضر طازج:15g\nبذور رمان طازجة:10g\nفجل:15g\nفلفل أخضر:20g\nنعناع طازج:5g\nبرغل:15g\nصوص فتوش:75g", d_en: "Lettuce:0.03k\nTomato:0.05k\nParsley:0.03k\nFresh Thyme:0.005k\nPurslane:0.005k\nCucumber:0.03k\nGreen Onion:0.015k\nPomegranate Seeds:0.01k\nRadish:0.015k\nGreen Pepper:0.02k\nFresh Mint:0.005k\nBulgur:0.015k\nFattoush Sauce:0.075k"}
-                ]
-            },
-            {
-                cat: "الرز", cat_en: "Rice", items: [
-                    {n: "رز أبو العبد", n_en: "Abu Al-Abed Rice", b: 1, d: "رز:1k\nمياه:2l\nملح صيني:5g\nملح:20g\nفلفل أسود:2g\nكاري:5g\nزنجبيل:2g\nقرفة:1\nهيل:1\nزعفران:2g\nبصل:60g\nزبدة:50g\nزيت:50g\nماجي:4", d_en: "Rice:1k\nWater:2l\nChinese Salt:5g\nSalt:20g\nBlack Pepper:2g\nCurry:5g\nGinger:2g\nCinnamon:1\nCardamom:1\nSaffron:2g\nOnion:60g\nButter:50g\nOil:50g\nMaggi:4"},
-                    {n: "الدقوس", n_en: "Daqous Sauce", b: 1, d: "طماطم طازج:5k\nزيت الذرة:40g\nمعجون طماطم:550g\nثوم:40g\nملح:20g\nبودرة كزبرة:10g\nفلفل اسود:5g\nمكعبات ماجي:2\nماء ورد:10g\nبودرة زعفران:2g\nبصل مفروم:50g", d_en: "Fresh Tomato:5k\nCorn Oil:40g\nTomato Paste:550g\nGarlic:40g\nSalt:20g\nCoriander Powder:10g\nBlack Pepper:5g\nMaggi Cubes:2\nRose Water:10g\nSaffron Powder:2g\nMinced Onion:50g"}
-                ]
-            },
-            {
-                cat: "المشروبات", cat_en: "Beverages", items: [
-                    {n: "اللبن", n_en: "Laban", b: 1, d: "زبادي:1k\nعصير ليمون:25g\nملح:5g\nثلج:100g", d_en: "Lemon Juice:25g\nSalt:5g\nIce:100g"},
-                    {n: "برتقال", n_en: "Orange Juice", b: 1, d: "ثلج:3 مكعبات\nبرتقال:3 حبات", d_en: "Ice:3 cubes\nOrange:3 pcs"},
-                    {n: "خوخ برتقال", n_en: "Peach Orange", b: 1, d: "برتقال:2 حبتين\nخوخ:1 حبة\nسكر:2 ملعقة", d_en: "Orange:2 pcs\nPeach:1 pc\nSugar:2 spoons"},
-                    {n: "ليموندا", n_en: "Lemonade", b: 1, d: "برتقال:2 حبتين\nليمون:1 حبة\nسكر:2 ملعقة", d_en: "Orange:2 pcs\nLemon:1 pc\nSugar:2 spoons"}
-                ]
-            }
-        ];
+      function render(filter = "") {
+    let container = document.getElementById('mainContent');
+    container.innerHTML = "";
 
-        function render() {
-            let html = "";
-            menu.forEach(cat => {
-                let catName = currentLang === 'ar' ? cat.cat : cat.cat_en;
-                let catBadge = categoryHasNew(cat.items) 
-                    ? ` <span style="background: #ff4757; color: white; padding: 2px 8px; border-radius: 50px; font-size: 11px; margin-right: 8px;">${currentLang === 'ar' ? 'جديد' : 'NEW'}</span>` 
-                    : '';
+    menu.forEach((cat) => {
+        let catName = currentLang === 'ar' ? cat.cat : cat.cat_en;
+        let filteredItems = cat.items.item ? cat.items : cat.items.filter(item => {
+            let itemName = currentLang === 'ar' ? item.n : item.n_en;
+            return itemName.toLowerCase().includes(filter.toLowerCase());
+        });
 
+        if (filteredItems.length === 0 && filter !== "") return;
+
+        let catDiv = document.createElement('div');
+        
+        let titleDiv = document.createElement('div');
+        titleDiv.className = "category-title";
+        titleDiv.innerHTML = catName;
+        titleDiv.onclick = function() {
+            let content = this.nextElementSibling;
+            content.style.display = content.style.display === "block" ? "none" : "block";
+        };
+
+        let contentDiv = document.createElement('div');
+        contentDiv.className = "cat-content";
+        if (filter !== "") contentDiv.style.display = "block";
+
+        filteredItems.forEach((item) => {
+            let itemName = currentLang === 'ar' ? item.n : item.n_en;
+            
+            let itemBox = document.createElement('div');
+            itemBox.className = "item-container";
+
+            let itemHeader = document.createElement('div');
+            itemHeader.className = "item-title";
+            itemHeader.innerHTML = itemName;
+            itemHeader.onclick = function() {
+                let ingList = this.nextElementSibling;
+                ingList.style.display = ingList.style.display === "block" ? "none" : "block";
+            };
+            itemBox.appendChild(itemHeader);
+
+            let ingDiv = document.createElement('div');
+            ingDiv.className = "ingredients-list";
+            
+            // تصميم مكان المقادير وحاسبة الكمية ومعها زر الفيديو بجانب زر الحساب
+            ingDiv.innerHTML = `
+                <div style="margin-bottom: 10px; white-space: pre-line;">${currentLang === 'ar' ? item.d : item.d_en}</div>
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 15px;">
+                    <input type="number" class="qty" value="${item.b}" min="0.1" step="any">
+                    <button onclick="calculateRecipe(this)">حساب</button>
+                    <button class="video-btn" onclick="openVideo('${item.video || ""}')" style="background: #333; color: #fff;">🎥 فيديو</button>
+                </div>
+            `;
+
+            itemBox.appendChild(ingDiv);
+            contentDiv.appendChild(itemBox);
+        });
+
+        catDiv.appendChild(titleDiv);
+        catDiv.appendChild(contentDiv);
+        container.appendChild(catDiv);
+    });
+}
+
+// دالة التعامل مع ضغط زر الفيديو (لو موجود يفتح، لو مش موجود ينبه الموظف)
+function openVideo(videoUrl) {
+    if (videoUrl && videoUrl.trim() !== "") {
+        window.open(videoUrl, "_blank");
+    } else {
+        alert("عفواً، فيديو التحضير غير متوفر لهذا الصنف حالياً.");
+    }
+}
                 html += `<div class="category-title" onclick="toggleCat(this)">${catName} ${catBadge}</div>
                          <div class="cat-content">`;
                 
