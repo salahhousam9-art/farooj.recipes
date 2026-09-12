@@ -366,7 +366,111 @@
             if (!catItems) return false;
             return catItems.some(item => isItemNew(item.dateAdded));
         }
+const categories = [
+            {
+                Cat: "الصوصات", 
+                cat_en: "Sauces", 
+                items: [
+                    {
+                        n: "وردي", 
+                        n_en: "Pink Sauce", 
+                        b: 1, 
+                        d: "بهار:400g\nزيت:6l\nثلج:1k\nبيضة:30", 
+                        d_en: "Spices:400g\nOil:6l\nIce:1k\nEgg:30",
+                        video: "https://drive.google.com/file/d/YOUR_DRIVE_FILE_ID_HERE/view"
+                    },
+                    {
+                        n: "اسبايسي", 
+                        n_en: "Spicy Sauce", 
+                        b: 1, 
+                        d: "بهار:500g\nشطة:420g\nزيت:6l\nثلج:1k\nبيضة:30", 
+                        d_en: "Spices:500g\nHot Sauce:420g\nOil:6l\nIce:1k\nEgg:30"
+                    }
+                ]
+            }
+        ];
 
+        function render(filter = "") {
+            let container = document.getElementById('mainContent');
+            container.innerHTML = "";
+
+            categories.forEach((cat, catIndex) => {
+                let catName = currentLang === 'ar' ? cat.Cat : cat.cat_en;
+                let filteredItems = cat.items.filter(item => {
+                    let itemName = currentLang === 'ar' ? item.n : item.n_en;
+                    return itemName.toLowerCase().includes(filter.toLowerCase());
+                });
+
+                if (filteredItems.length === 0 && filter !== "") return;
+
+                let catDiv = document.createElement('div');
+                
+                let titleDiv = document.createElement('div');
+                titleDiv.className = "category-title";
+                titleDiv.innerHTML = catName;
+                titleDiv.onclick = function() {
+                    let content = this.nextElementSibling;
+                    content.style.display = content.style.display === "block" ? "none" : "block";
+                };
+
+                let contentDiv = document.createElement('div');
+                contentDiv.className = "cat-content";
+                if (filter !== "") contentDiv.style.display = "block";
+
+                filteredItems.forEach((item, itemIndex) => {
+                    let itemName = currentLang === 'ar' ? item.n : item.n_en;
+                    
+                    let itemBox = document.createElement('div');
+                    itemBox.className = "item-container";
+
+                    let itemHeader = document.createElement('div');
+                    itemHeader.className = "item-title";
+                    itemHeader.style.cssText = "display: flex; justify-content: space-between; align-items: center;";
+                    
+                    let nameSpan = document.createElement('span');
+                    nameSpan.innerHTML = itemName;
+                    nameSpan.style.cursor = "pointer";
+                    nameSpan.onclick = function() {
+                        let ingList = this.parentElement.nextElementSibling;
+                        ingList.style.display = ingList.style.display === "block" ? "none" : "block";
+                    };
+                    itemHeader.appendChild(nameSpan);
+
+                    if (item.video && item.video.trim() !== "") {
+                        let videoBtn = document.createElement('a');
+                        videoBtn.href = item.video;
+                        videoBtn.target = "_blank";
+                        videoBtn.title = currentLang === 'ar' ? "طريقة التحضير (فيديو)" : "Preparation Video";
+                        videoBtn.innerHTML = "🎥";
+                        videoBtn.style.cssText = "text-decoration: none; font-size: 18px; padding: 4px 8px; background: rgba(139,0,0,0.1); border-radius: 6px;";
+                        
+                        videoBtn.onclick = function(e) {
+                            e.stopPropagation();
+                        };
+                        
+                        itemHeader.appendChild(videoBtn);
+                    }
+
+                    itemBox.appendChild(itemHeader);
+
+                    let ingDiv = document.createElement('div');
+                    ingDiv.className = "ingredients-list";
+                    ingDiv.innerHTML = `<p style="margin:0;">(مكان المقادير والحاسبة للـ ${itemName})</p>`;
+
+                    itemBox.appendChild(ingDiv);
+                    contentDiv.appendChild(itemBox);
+                });
+
+                catDiv.appendChild(titleDiv);
+                catDiv.appendChild(contentDiv);
+                container.appendChild(catDiv);
+            });
+        }
+
+        function searchItems() {
+            let query = document.getElementById('searchInput').value;
+            render(query);
+        }
         // 5. قاعدة بيانات الأصناف
         const menu = [
             {
