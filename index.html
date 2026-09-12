@@ -342,7 +342,30 @@
                     themeBtn.innerHTML = '🌙 Dark Mode';
                 }
             };
+             btnContainer.appendChild(langBtn);
+            btnContainer.appendChild(themeBtn);
+
+            toolbar.appendChild(titleSpan);
+            toolbar.appendChild(btnContainer);
+            document.body.insertBefore(toolbar, document.getElementById('searchInput'));
+            
+            render();
+        });
+
+        // 4. 
+        function isItemNew(itemDate) {
+            if (!itemDate) return false;
+            let added = new Date(itemDate);
+            let now = new Date("2026-07-25");
+            let diffDays = (now - added) / (1000 * 60 * 60 * 24);
+            return diffDays >= 0 && diffDays <= 30;
         }
+
+        function categoryHasNew(catItems) {
+            if (!catItems) return false;
+            return catItems.some(item => isItemNew(item.dateAdded));
+        }
+
         // 5. قاعدة بيانات الأصناف
         const menu = [
             {
