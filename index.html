@@ -472,7 +472,7 @@
                         <div style="display: flex; gap: 10px; align-items: center; margin-top: 15px;">
                             <input type="number" class="qty" value="${item.b}" min="0.1" step="any">
                             <button onclick="calc(this, ${item.b}, '${itemDesc.replace(/\n/g, '\\n')}', '${itemName}')">${calcText}</button>
-                            <button onclick="openVideo('${item.video || ""}')" style="background: #333; color: #fff;">🎥 ${videoText}</button>
+                            <button onclick="openVideo('${item.video || ""}')">${videoText} 🎥</button>
                         </div>
                     `;
 
